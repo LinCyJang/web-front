@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view />
     <div class="flex-x-center flex-y-center">
       <div class="neu box">
-       Aa
+        Aa
       </div>
       <button class="neu button ml-5">
         Bb
@@ -15,7 +15,7 @@
 <script>
 
 export default {
-  name: 'app',
+  name: 'App'
 }
 </script>
 
