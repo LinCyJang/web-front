@@ -1,121 +1,88 @@
 <template>
-  <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar v-if="isVertical" class="sidebar-container" />
-    <div :class="{hasTagsView:needTagsView,'flag':!isVertical}" class="main-container" :style="!isVertical?'margin-left:0 !important' : ''">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
-        <tags-view v-if="needTagsView" />
-      </div>
-      <app-main />
-      <right-panel v-if="showSettings">
-        <settings />
-      </right-panel>
-    </div>
+  <div>
+    <v-app-bar
+      app
+      color="#F06292"
+      prominent
+      dark
+      fade-img-on-scroll
+      elevation="2"
+      shrink-on-scroll
+      sroll-target="#scrolling-techniques-2"
+      src="../assets/px_city.jpg"
+    >
+      <template v-slot:img="{ props }">
+        <v-img v-bind="props"></v-img>
+      </template>
+      <v-toolbar-title>{{ $t("m.title") }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn icon @click.stop="handlerChangeT()">
+        <v-icon>mdi-translate</v-icon>
+      </v-btn>
+      <template v-slot:extension>
+        <v-tabs align-with-title v-model="tab" center-active>
+          <v-tab
+            v-for="item in tabs"
+            :key="item.id"
+            class="ma-0"
+            @click.stop="handlerTab(item)"
+          >
+            {{ item.name }}
+          </v-tab>
+        </v-tabs>
+      </template>
+    </v-app-bar>
   </div>
 </template>
 
 <script>
-import RightPanel from '@/components/RightPanel'
-import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
-import { mapState } from 'vuex'
-
 export default {
-  name: 'Layout',
-  components: {
-    AppMain,
-    Navbar,
-    RightPanel,
-    Settings,
-    Sidebar,
-    TagsView
-  },
-  mixins: [ResizeMixin],
-  computed: {
-    ...mapState({
-      sidebar: state => state.app.sidebar,
-      device: state => state.app.device,
-      showSettings: state => state.settings.showSettings,
-      needTagsView: state => state.settings.tagsView,
-      fixedHeader: state => state.settings.fixedHeader
-    }),
-    isVertical() {
-      return this.$store.state.settings.isVertical
-    },
-    classObj() {
-      return {
-        hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opened,
-        withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === 'mobile'
-      }
-    }
-  },
-  mounted() {
-    console.log(this.$sideBarWidth)
+  data: () => {
+    return {
+      tab: localStorage.getItem("tabId"),
+      tabs: [
+        { name: "tab1", href: "/", id: 1 },
+        { name: "jsplumb", href: "/jsplumb", id: 2 },
+        { name: "tab3", href: "/", id: 3 },
+        { name: "tab4", href: "/", id: 4 }
+      ]
+    };
   },
   methods: {
-    handleClickOutside() {
-      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+    handlerChangeT() {
+      // this.$i18n.locale = 'zh-CN'
+      let lang = localStorage.getItem("lang");
+      if (!lang) {
+        localStorage.setItem("lang", "en-US");
+        this.$i18n.locale = "en-US";
+      } else {
+        switch (lang) {
+          case "en-US":
+            localStorage.setItem("lang", "zh-CN");
+            this.$i18n.locale = "zh-CN";
+            break;
+          case "zh-CN":
+            localStorage.setItem("lang", "en-US");
+            this.$i18n.locale = "en-US";
+        }
+      }
+    },
+
+    handlerTab(item) {
+      localStorage.setItem("tabId", item.id);
+      this.$router.push({ path: item.href });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-  @import "../plugins/styles/mixin.scss";
-  @import "../plugins/styles/variables.scss";
-
-  .app-wrapper {
-    @include clearfix;
-    position: relative;
-    height: 100%;
-    width: 100%;
-
-    &.mobile.openSidebar {
-      position: fixed;
-      top: 0;
-    }
-  }
-
-  .drawer-bg {
-    background: #000;
-    opacity: 0.3;
-    width: 100%;
-    top: 0;
-    height: 100%;
-    position: absolute;
-    z-index: 999;
-  }
-
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 9;
-    width: calc(100% - #{$sideBarWidth});
-    transition: width 0.28s;
-  }
-
-  .hideSidebar .fixed-header {
-    width: calc(100% - 54px)
-  }
-
-  .mobile .fixed-header {
-    width: 100%;
-  }
-  .flag{
-    .fixed-header {
-      position: fixed;
-      top: 0;
-      right: 0;
-      z-index: 9;
-      width: calc(100%) !important;
-      transition: width 0.28s;
-    }
-    .fixed-header+.app-main {
-      padding-top: 140px !important;
-    }
-  }
+* {
+  font-size: 0.725rem;
+}
 </style>

@@ -1,77 +1,53 @@
 <template>
-  <div id="app">
-    <router-view />
-    <div class="flex-x-center flex-y-center">
-      <div class="neu box">
-        Aa
-      </div>
-      <button class="neu button ml-5">
-        Bb
-      </button>
-    </div>
-  </div>
+  <v-app>
+    <v-index></v-index>
+    <v-main>
+      <v-row class="ma-0">
+        <v-col md="10" class="pr-0 ">
+          <transition name="slide-left" mode="out-in">
+            <router-view />
+          </transition>
+        </v-col>
+        <v-col md="2" class="pl-0">
+          <VRight></VRight>
+        </v-col>
+      </v-row>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-
+import VIndex from "./layout/index.vue";
+import VRight from "./layout/right.vue";
 export default {
-  name: 'App'
-}
+  name: "App",
+
+  components: {
+    // eslint-disable-next-line vue/no-unused-components
+    VIndex,
+    VRight
+  },
+
+  data: () => ({
+    //
+  })
+};
 </script>
-
-<style>
-
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  margin-top: 60px;
+<style lang="scss" scoped>
+.slide-left-enter {
+  opacity: 0;
+  -webkit-transform: translate(30px, 0);
+  transform: translate(30px, 0);
 }
-.flex-x-center{
-  display: flex;
-  justify-content: center;
+.slide-left-enter-active {
+  transition: all 0.3s ease;
 }
-.flex-y-center{
-  display: flex;
-  align-items: center;
+.slide-left-leave-to {
+  opacity: 0;
+  -webkit-transform: translate(-30px, 0);
+  transform: translate(-30px, 0);
 }
-.ml-5{
-  margin-left: 10px;
+.slide-left-leave-active {
+  transition: all 0.1s ease;
 }
-.neu.box{
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  font-size: 30px;
-  font-weight: 700;
-  border-radius: 4px;
-}
-.neu{
-  background: rgb(236,235,242);
-  box-shadow:  2px 2px 5px 2px rgba(0,0,0,0.1), -2px -2px 6px 2px rgba(255,255,255,1);
-  text-align: center;
-  background-image: -webkit-linear-gradient(left, rgb(24,92,238), #33D2E3);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  transition: all 0.3 ease-in-out;
-  -moz-user-select:none;
-  -webkit-user-select:none;
-}
-.neu:hover{
-  box-shadow:  1px 1px 3px 1px rgba(0,0,0,0.1), -1px -1px 3px 1px rgba(255,255,255,1);
-}
-.neu:active{
-  box-shadow: inset 1px 1px 3px 1px rgba(0,0,0,0.1),inset -1px -1px 3px 1px rgba(255,255,255,1);
-}
-.neu.button{
-  width: 100px;
-  height: 40px;
-  border-radius: 40px;
-  border: none;
-  outline: none;
-  font-size: 20px;
-  font-weight: 700;
-}
-
 </style>

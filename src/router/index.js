@@ -1,41 +1,33 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-Vue.use(Router)
+Vue.use(VueRouter);
 
-// layout
-
-import Layout from '@/layout'
-
-export const constantRoutes = [
+//获取原型对象上的push函数
+const originalPush = VueRouter.prototype.push;
+//修改原型对象中的push方法
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err);
+};
+const routes = [
   {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
+    path: "/",
+    name: "Home",
+    component: () =>
+      import(/* webpackChunkName: "index" */ "../views/index.vue")
+  },
+  {
+    path: "/jsplumb",
+    name: "jsplumb",
+    component: () =>
+      import(/* webpackChunkName: "index" */ "../views/vueJsplumb/index.vue")
   }
-]
+];
 
-export const asyncRoutes = [
-  {}
-]
+const router = new VueRouter({
+  mode: "history",
+  base: process.env.BASE_URL,
+  routes
+});
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
-
-const router = createRouter()
-
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
-}
-export default router
+export default router;
