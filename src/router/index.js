@@ -3,31 +3,53 @@ import VueRouter from "vue-router";
 
 Vue.use(VueRouter);
 
-//获取原型对象上的push函数
-const originalPush = VueRouter.prototype.push;
-//修改原型对象中的push方法
-VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err);
-};
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: () =>
-      import(/* webpackChunkName: "index" */ "../views/index.vue")
+    component: () => import("../views/index.vue")
   },
   {
     path: "/jsplumb",
     name: "jsplumb",
-    component: () =>
-      import(/* webpackChunkName: "index" */ "../views/vueJsplumb/index.vue")
+    component: () => import("../views/vueJsplumb/index.vue")
+  },
+  {
+    path: "/node",
+    name: "node",
+    component: () => import("../views/node/node.vue"),
+    children: [
+      {
+        path: "detail",
+        component: () => import("../views/node/detail.vue"),
+        name: "detail"
+      }
+    ]
+  },
+  {
+    path: "/log",
+    name: "log",
+    component: () => import("../views/log.vue")
   }
 ];
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes
-});
+// const router = new VueRouter({
+//   mode: "history",
+//   base: process.env.BASE_URL,
+//   routes
+// });
+
+const createRouter = () =>
+  new VueRouter({
+    scrollBehavior: () => ({ y: 0 }),
+    routes: routes
+  });
+
+const router = createRouter();
+
+export function resetRouter() {
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher;
+}
 
 export default router;

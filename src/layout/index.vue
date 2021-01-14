@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="layout-index">
     <v-app-bar
       app
       color="#F06292"
@@ -27,10 +27,10 @@
       <template v-slot:extension>
         <v-tabs align-with-title v-model="tab" center-active>
           <v-tab
-            v-for="item in tabs"
+            v-for="item in $router.options.routes"
             :key="item.id"
             class="ma-0"
-            @click.stop="handlerTab(item)"
+            :to="item.path"
           >
             {{ item.name }}
           </v-tab>
@@ -82,7 +82,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-* {
-  font-size: 0.725rem;
+.layout-index {
+  & {
+    font-size: 0.725rem;
+  }
 }
 </style>

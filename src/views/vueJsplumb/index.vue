@@ -6,10 +6,10 @@
 
 <script>
 export default {
-
-}
+  mounted() {
+    console.log(this.$router.options.routes);
+  }
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
