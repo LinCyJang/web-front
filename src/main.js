@@ -8,6 +8,9 @@ import axios from "axios";
 import "github-markdown-css/github-markdown.css"; //引入markdown样式
 import "highlight.js/styles/atom-one-dark.css"; // 引入高亮样式
 import hljs from "highlight.js";
+import "@/styles/index.scss";
+import "./plugins/utils";
+
 // 如果开启了typescript 需要额外安装 npm install @types/highlight.js
 // 通过 import * as hljs from 'highlight.js' 引入
 Vue.directive("highlight", function(el) {

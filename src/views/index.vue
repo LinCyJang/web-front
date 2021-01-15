@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-    <v-card v-for="item in hots" :key="item.createtime" class="my-4">
+    <v-card v-for="item in hots" :key="item.createtime" class="mb-4">
       <v-card-title>{{ item.createtime }}</v-card-title>
       <v-card-text class="px-0">
         <v-list two-line>

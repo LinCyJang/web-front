@@ -3,13 +3,14 @@
     <v-index></v-index>
     <v-main>
       <v-row class="ma-0">
-        <v-col md="10" class="pr-0 ">
+        <v-col md="3" class="pr-0"> </v-col>
+        <v-col md="6" class="pr-0 ">
           <transition name="slide-left" mode="out-in">
             <router-view />
           </transition>
         </v-col>
-        <v-col md="2" class="pl-0">
-          <VRight></VRight>
+        <v-col md="3" class="pl-0">
+          <VSide></VSide>
         </v-col>
       </v-row>
     </v-main>
@@ -18,14 +19,14 @@
 
 <script>
 import VIndex from "./layout/index.vue";
-import VRight from "./layout/right.vue";
+import VSide from "./layout/side.vue";
 export default {
   name: "App",
 
   components: {
     // eslint-disable-next-line vue/no-unused-components
     VIndex,
-    VRight
+    VSide
   },
 
   data: () => ({

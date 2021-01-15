@@ -7,29 +7,32 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: () => import("../views/index.vue")
+    component: () => import("../views/index.vue"),
+    show: true
   },
   {
-    path: "/jsplumb",
-    name: "jsplumb",
-    component: () => import("../views/vueJsplumb/index.vue")
+    path: "/Classify",
+    name: "Classify",
+    component: () => import("../views/vueJsplumb/index.vue"),
+    show: true
   },
   {
-    path: "/node",
-    name: "node",
+    path: "/Pigeonhole",
+    name: "Pigeonhole",
     component: () => import("../views/node/node.vue"),
-    children: [
-      {
-        path: "detail",
-        component: () => import("../views/node/detail.vue"),
-        name: "detail"
-      }
-    ]
+    show: true
   },
   {
-    path: "/log",
-    name: "log",
-    component: () => import("../views/log.vue")
+    path: "/node/detail",
+    component: () => import("../views/node/detail.vue"),
+    name: "detail",
+    show: false
+  },
+  {
+    path: "/Aboat",
+    name: "Aboat",
+    component: () => import("../views/log.vue"),
+    show: true
   }
 ];
 

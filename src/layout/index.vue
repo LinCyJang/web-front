@@ -25,14 +25,13 @@
         <v-icon>mdi-translate</v-icon>
       </v-btn>
       <template v-slot:extension>
-        <v-tabs align-with-title v-model="tab" center-active>
+        <v-tabs v-model="tab" center-active centered>
           <v-tab
-            v-for="item in $router.options.routes"
+            v-for="item in $router.options.routes.filter(i => i.show)"
             :key="item.id"
-            class="ma-0"
             :to="item.path"
           >
-            {{ item.name }}
+            {{ $t(`m.${item.name}`) }}
           </v-tab>
         </v-tabs>
       </template>

@@ -7,7 +7,7 @@
 <script>
 export default {
   mounted() {
-    console.log(this.$router.options.routes);
+    // console.log(this.$router.options.routes);
   }
 };
 </script>

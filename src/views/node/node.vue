@@ -1,28 +1,25 @@
 <template>
-  <div class="aboat">
-    <v-card v-for="item in articleList" :key="item.id" class="my-4">
+  <div class="node">
+    <v-card
+      v-for="item in articleList"
+      :key="item.id"
+      class="mb-4"
+      :to="`/node/detail?id=${item.id}`"
+    >
       <v-card-title>{{ item.title }}</v-card-title>
       <v-card-text>
         {{ item.content_short }}
-        <div class="markdown-body">
-          <VueMarkdown :source="item.content" v-highlight> </VueMarkdown>
-        </div>
       </v-card-text>
     </v-card>
   </div>
 </template>
 
 <script>
-import VueMarkdown from "vue-markdown";
-
 export default {
-  data() {
+  data: () => {
     return {
       articleList: []
     };
-  },
-  components: {
-    VueMarkdown
   },
   async mounted() {
     await this.getArticleList();
@@ -46,9 +43,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.theme--light.v-application code {
-  background-color: transparent !important;
-}
-</style>

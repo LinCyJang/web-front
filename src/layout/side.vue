@@ -1,7 +1,7 @@
 <template>
   <div class="right mx-4">
-    <v-card height="400" class="my-4">
-      <v-date-picker v-model="picker" flat></v-date-picker>
+    <v-card height="400" class="mb-4">
+      <!-- <v-date-picker v-model="picker" flat></v-date-picker> -->
     </v-card>
   </div>
 </template>
