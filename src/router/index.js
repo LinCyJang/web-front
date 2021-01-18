@@ -23,7 +23,7 @@ const routes = [
     show: true
   },
   {
-    path: "/node/detail",
+    path: "/Pigeonhole/detail",
     component: () => import("../views/node/detail.vue"),
     name: "detail",
     show: false

@@ -5,12 +5,16 @@
       <span class="mr-2">
         <v-icon size="14">mdi-calendar-clock</v-icon>
         {{ $t("m.issueDated") }}:
-        {{ (articleInfo.display_time / 1) | dateFormat }} </span
+        {{
+          $utils.formatTime("yyyy-MM-dd", articleInfo.display_time / 1)
+        }} </span
       >|
       <span class="mx-2">
         <v-icon size="14">mdi-calendar-check</v-icon>
         {{ $t("m.updateTime") }}:
-        {{ (articleInfo.display_time / 1) | dateFormat }} </span
+        {{
+          $utils.formatTime("yyyy-MM-dd", articleInfo.display_time / 1)
+        }} </span
       >|
       <span class="mx-2">
         <v-icon size="14">mdi-folder-outline</v-icon>
