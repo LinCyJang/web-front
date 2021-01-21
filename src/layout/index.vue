@@ -16,7 +16,6 @@
       </template>
       <v-toolbar-title>{{ $t("m.title") }}</v-toolbar-title>
       <v-spacer></v-spacer>
-
       <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
@@ -24,6 +23,32 @@
       <v-btn icon @click.stop="handlerChangeT()">
         <v-icon>mdi-translate</v-icon>
       </v-btn>
+      <!-- @click="logout()" -->
+      <div
+        v-if="$store.state.token"
+        @mouseover="expand = true"
+        @mouseleave="expand = false"
+      >
+        <v-avatar size="48" class="mb-1">
+          <img
+            :src="$store.state.data.avatar"
+            :alt="$store.state.data.username"
+          />
+        </v-avatar>
+        <v-expand-transition>
+          <v-card
+            flat
+            v-if="expand"
+            @click="logout()"
+            color="priamry"
+            height="28"
+            width="48"
+          >
+            <span class="t-logout">{{ $t("m.logOut") }}</span>
+          </v-card>
+        </v-expand-transition>
+      </div>
+      <login-form v-if="!$store.state.token"></login-form>
       <template v-slot:extension>
         <v-tabs v-model="tab" center-active centered>
           <v-tab
@@ -40,21 +65,23 @@
 </template>
 
 <script>
+import loginForm from "@/components/loginForm.vue";
 export default {
   data: () => {
     return {
       tab: localStorage.getItem("tabId"),
-      tabs: [
-        { name: "tab1", href: "/", id: 1 },
-        { name: "jsplumb", href: "/jsplumb", id: 2 },
-        { name: "tab3", href: "/", id: 3 },
-        { name: "tab4", href: "/", id: 4 }
-      ]
+      expand: false
     };
+  },
+  components: {
+    loginForm
+  },
+  mounted() {
+    if (localStorage.getItem("lang"))
+      this.$i18n.locale = localStorage.getItem("lang");
   },
   methods: {
     handlerChangeT() {
-      // this.$i18n.locale = 'zh-CN'
       let lang = localStorage.getItem("lang");
       if (!lang) {
         localStorage.setItem("lang", "en-US");
@@ -72,9 +99,30 @@ export default {
       }
     },
 
-    handlerTab(item) {
-      localStorage.setItem("tabId", item.id);
-      this.$router.push({ path: item.href });
+    // 上传七牛
+    changeAvatar(e) {
+      this.$axios.get("/api/article/upload", { bucket: "" }).then(res => {
+        const uploadToken = res.data.qiniuToken;
+        var data = new FormData();
+        data.append("token", uploadToken);
+        data.append("file", e.target.files[0]);
+        this.$axios({
+          method: "POST",
+          url: "https://upload-z2.qiniup.com",
+          data: data,
+          onUploadProgress: function() {
+            // var percentCompleted = Math.round(
+            //   (progressEvent.loaded * 100) / progressEvent.total
+            // );
+          }
+        }).then(res => {
+          //  `http://publicimage.xq5.com/${response.data.key}`; （若bucket 参数为public-image则不需要下一步的图片地址获取可直接使用http://publicimage.xq5.com/ + ‘res.data.key’，拼接图片地址）
+          console.log(res.data.key);
+        });
+      });
+    },
+    async logout() {
+      await this.$store.dispatch("logout");
     }
   }
 };
@@ -84,6 +132,15 @@ export default {
 .layout-index {
   & {
     font-size: 0.725rem;
+  }
+  .t-logout {
+    font-size: 0.725rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    /* width: 100%; */
+    height: 100%;
+    justify-content: center;
   }
 }
 </style>

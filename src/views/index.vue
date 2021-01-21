@@ -1,7 +1,9 @@
 <template>
   <div class="index">
     <v-card v-for="item in hots" :key="item.createtime" class="mb-4">
-      <v-card-title>{{ item.createtime }}</v-card-title>
+      <v-card-title>{{
+        $utils.formatTime("yyyy-MM-dd", item.createtime / 1)
+      }}</v-card-title>
       <v-card-text class="px-0">
         <v-list two-line>
           <v-list-item-group>
@@ -46,6 +48,9 @@ export default {
   },
   mounted() {
     this.getlist();
+    setTimeout(() => {
+      this.selectAllTitle();
+    }, 300);
   },
   methods: {
     getlist() {
@@ -60,6 +65,18 @@ export default {
     },
     handlerHref(url) {
       window.open(url);
+    },
+    selectAllTitle() {
+      let title = document.querySelectorAll(".v-list-item__title");
+      let navList = Array.from(title);
+      navList.forEach(item => {
+        item.name = item.innerHTML;
+      });
+      navList.forEach(el => {
+        let index = el.localName.indexOf("h");
+        el.lev = "lev" + el.localName.substring(index + 1, el.localName.length);
+      });
+      this.$store.commit("SET_ITEMS", navList);
     }
   }
 };

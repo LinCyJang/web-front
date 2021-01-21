@@ -1,3 +1,4 @@
+// lang/en.js
 export const m = {
   hello: "hello",
   title: "title",
@@ -12,5 +13,11 @@ export const m = {
   FAQ: "FAQ",
   Aboat: "Aboat",
   Pigeonhole: "Pigeonhole",
-  level: "level"
+  level: "level",
+  logIn: "LogIn",
+  register: "register",
+  close: "close",
+  userAccount: "user account",
+  password: "password",
+  logOut: "log out"
 };

@@ -40,6 +40,20 @@ const unique = arr => {
   return arr.filter(a => !res.has(a) && res.set(a, 1));
 };
 
+// 生成导航dom数组
+const selectAllTitle = () => {
+  let title = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+  let navList = Array.from(title);
+  navList.forEach(item => {
+    item.name = item.innerHTML;
+  });
+  navList.forEach(el => {
+    let index = el.localName.indexOf("h");
+    el.lev = "lev" + el.localName.substring(index + 1, el.localName.length);
+  });
+  return navList;
+};
+
 export default function(Vue) {
-  Vue.prototype.$utils = { formatTime, unique };
+  Vue.prototype.$utils = { formatTime, unique, selectAllTitle };
 }

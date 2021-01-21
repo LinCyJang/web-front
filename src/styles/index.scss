@@ -17,3 +17,20 @@
 .m-auto {
   margin: auto !important;
 }
+
+// fixed
+
+.fixed{
+  position: fixed !important;
+}
+
+// width
+.full-width{
+  width: 100%;
+}
+
+// sticky
+.sticky{
+  position: sticky !important;
+  top: 120px;
+}

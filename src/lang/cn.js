@@ -1,3 +1,4 @@
+// lang/cn.js
 export const m = {
   hello: "你好",
   title: "标题",
@@ -12,5 +13,11 @@ export const m = {
   FAQ: "FAQ",
   Aboat: "关于",
   Pigeonhole: "归档",
-  level: "入手级别"
+  level: "入手级别",
+  logIn: "登录",
+  register: "注册",
+  close: "关闭",
+  userAccount: "用户账号",
+  password: "密码",
+  logOut: "退出"
 };

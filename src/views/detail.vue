@@ -1,5 +1,6 @@
 <template>
   <v-card>
+    <!-- <div v-for="(item,index) in navList" :key="index" @click="handleClick(index)">{{item.name}}</div> -->
     <v-card-title class="flex-x-center">{{ articleInfo.title }}</v-card-title>
     <v-card-subtitle class="flex-x-center ma-0">
       <span class="mr-2">
@@ -29,9 +30,7 @@
       <span class="mx-2">
         <v-icon size="14">mdi-file-code-outline</v-icon>
         {{ $t("m.NumberOfWords") }}:
-        {{
-          articleInfo.content.replace(/[^\w^\s^\u4e00-\u9fa5]/gi, "").length
-        }} </span
+        {{ wordsCount(articleInfo.content) }} </span
       >|
       <span class="mx-2">
         <v-icon size="14">mdi-account-outline</v-icon>
@@ -60,6 +59,7 @@
 </template>
 
 <script>
+import { articleDetail } from "../api/article";
 import VueMarkdown from "vue-markdown";
 export default {
   data: () => {
@@ -70,21 +70,27 @@ export default {
   components: {
     VueMarkdown
   },
+  computed: {},
   async mounted() {
     await this.getdetail();
+    setTimeout(() => {
+      this.$store.commit("SET_ITEMS", this.$utils.selectAllTitle()); // 更新左侧导航
+    }, 300);
   },
   methods: {
     async getdetail() {
-      await this.$axios
-        .post("/api/article/articleDetail", {
-          id: this.$route.query.id
-        })
+      await articleDetail({
+        id: this.$route.query.id
+      })
         .then(res => {
-          this.articleInfo = res.data.data;
+          this.articleInfo = res.data;
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    wordsCount(art) {
+      return String(art).replace(/[^\w^\s^\u4e00-\u9fa5]/g, "").length;
     }
   }
 };

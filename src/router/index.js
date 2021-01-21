@@ -19,12 +19,12 @@ const routes = [
   {
     path: "/Pigeonhole",
     name: "Pigeonhole",
-    component: () => import("../views/node/node.vue"),
+    component: () => import("../views/pigeonhole.vue"),
     show: true
   },
   {
-    path: "/Pigeonhole/detail",
-    component: () => import("../views/node/detail.vue"),
+    path: "/:path/detail",
+    component: () => import("../views/detail.vue"),
     name: "detail",
     show: false
   },
