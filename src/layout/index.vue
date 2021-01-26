@@ -48,35 +48,52 @@
           </v-card>
         </v-expand-transition>
       </div>
-      <login-form v-if="!$store.state.token"></login-form>
+      <v-expand-x-transition>
+        <login-form v-if="!$store.state.token"></login-form>
+      </v-expand-x-transition>
       <template v-slot:extension>
         <v-tabs v-model="tab" center-active centered>
-          <v-tab
-            v-for="item in $router.options.routes.filter(i => i.show)"
-            :key="item.id"
-            :to="item.path"
-          >
+          <v-tab v-for="item in router" :key="item.id" :to="item.path">
             {{ $t(`m.${item.name}`) }}
           </v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
+    <v-row>
+      <v-col cols="6" md="3" class="mt-3">
+        <v-left :items="$store.state.items"></v-left>
+      </v-col>
+      <v-col md="6" class="mt-3">
+        <transition name="slide-left" mode="out-in">
+          <router-view />
+        </transition>
+      </v-col>
+      <v-col cols="6" md="3" class="mt-3">
+        <v-left :items="$store.state.items"></v-left>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
 import loginForm from "@/components/loginForm.vue";
+import VLeft from "./left.vue";
 export default {
   data: () => {
     return {
-      tab: localStorage.getItem("tabId"),
+      router: [],
+      tab: null,
       expand: false
     };
   },
   components: {
-    loginForm
+    loginForm,
+    VLeft
   },
   mounted() {
+    this.router = this.$router.options.routes
+      .filter(i => i.hidden)
+      .map(item => item.children[0]);
     if (localStorage.getItem("lang"))
       this.$i18n.locale = localStorage.getItem("lang");
   },
@@ -122,6 +139,7 @@ export default {
       });
     },
     async logout() {
+      this.expand = false;
       await this.$store.dispatch("logout");
     }
   }

@@ -19,5 +19,11 @@ export const m = {
   close: "关闭",
   userAccount: "用户账号",
   password: "密码",
-  logOut: "退出"
+  logOut: "退出",
+  type: "类型",
+  time: "时间",
+  briefIntroduction: "简介",
+  submit: "提交",
+  pubdate: "发布时间",
+  PublishArticle: "发布文章"
 };

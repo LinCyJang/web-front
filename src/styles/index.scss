@@ -1,4 +1,8 @@
 @import './vuetify-ui.scss';
+// *
+html,* {
+  font-size: 14px !important;
+}
 
 // flex
 .v-flex{
@@ -23,7 +27,10 @@
 .fixed{
   position: fixed !important;
 }
-
+// absolute
+.abs{
+  position: absolute !important;
+}
 // width
 .full-width{
   width: 100%;
@@ -33,4 +40,27 @@
 .sticky{
   position: sticky !important;
   top: 120px;
+}
+
+// markdown
+.v-note-wrapper{
+  z-index: 1 !important
+}
+
+// router
+.slide-left-enter {
+  opacity: 0;
+  -webkit-transform: translate(30px, 0);
+  transform: translate(30px, 0);
+}
+.slide-left-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-left-leave-to {
+  opacity: 0;
+  -webkit-transform: translate(-30px, 0);
+  transform: translate(-30px, 0);
+}
+.slide-left-leave-active {
+  transition: all 0.1s ease;
 }

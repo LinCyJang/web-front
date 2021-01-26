@@ -19,5 +19,11 @@ export const m = {
   close: "close",
   userAccount: "user account",
   password: "password",
-  logOut: "log out"
+  logOut: "log out",
+  type: "type",
+  time: "time",
+  briefIntroduction: "brief introduction",
+  submit: "submit",
+  pubdate: "pubdate",
+  PublishArticle: "Publish Article"
 };

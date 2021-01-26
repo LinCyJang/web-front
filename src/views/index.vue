@@ -1,91 +1,158 @@
 <template>
-  <div class="index">
-    <v-card v-for="item in hots" :key="item.createtime" class="mb-4">
-      <v-card-title>{{
-        $utils.formatTime("yyyy-MM-dd", item.createtime / 1)
-      }}</v-card-title>
-      <v-card-text class="px-0">
-        <v-list two-line>
-          <v-list-item-group>
-            <template v-for="(_item, index) in item.hots_list_json">
-              <v-list-item
-                :key="_item.title"
-                @click.stop="handlerHref('https://s.weibo.com' + _item.href)"
-              >
-                <template v-slot:default="{}">
-                  <v-list-item-content>
-                    <v-list-item-title v-text="_item.title"></v-list-item-title>
-                    <v-list-item-subtitle class="text--primary">
-                      <span class="red--text text--lighten-1 sub_title"
-                        >🔥 {{ _item.hotRank }}</span
-                      >
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle
-                      v-text="'https://s.weibo.com' + _item.href"
-                    ></v-list-item-subtitle>
-                  </v-list-item-content>
-                </template>
-              </v-list-item>
-
-              <v-divider
-                v-if="index + 1 < item.hots_list_json.length"
-                :key="index"
-              ></v-divider>
+  <v-form @submit.prevent="handleSubmit">
+    <v-app-bar>
+      <v-spacer></v-spacer>
+      <v-btn small type="submit" color="success">{{
+        $t("m.PublishArticle")
+      }}</v-btn>
+    </v-app-bar>
+    <v-card class="mt-3" tile>
+      <v-row class="px-4 mb-4">
+        <v-col>
+          <v-text-field
+            :label="$t('m.title')"
+            hide-details
+            v-model="postForm.title"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row class="px-4 mb-4">
+        <v-col cols="6" md="4">
+          <v-text-field
+            :label="$t('m.type')"
+            dense
+            hide-details
+            v-model="postForm.type"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="6" md="4" @mouseleave="expand = false">
+          <v-menu
+            ref="menu"
+            :close-on-content-click="false"
+            transition="scroll-y-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="postForm.display_time"
+                :label="$t('m.pubdate')"
+                prepend-icon="mdi-calendar"
+                readonly
+                dense
+                v-bind="attrs"
+                hide-details
+                v-on="on"
+              ></v-text-field>
             </template>
-          </v-list-item-group>
-        </v-list>
-      </v-card-text>
+            <v-date-picker
+              v-model="postForm.display_time"
+              style="z-index:9999"
+              no-title
+              scrollable
+            >
+              <!-- <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+              <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn> -->
+            </v-date-picker>
+          </v-menu>
+          <!-- <v-text-field
+            :label="$t('m.time')"
+            outlined
+            dense
+            hide-details
+            @click="expand = true"
+            :value="$utils.formatTime('yyyy-MM-dd', displayTime)"
+          ></v-text-field>
+          <v-expand-transition>
+            <v-date-picker v-if="expand" class="abs" style="z-index:9999" elevation="2"></v-date-picker>
+          </v-expand-transition> -->
+        </v-col>
+        <v-col cols="6" md="4" class="flex-y-center">
+          <v-rating :label="$t('m.type')" background-color="grey lighten-1">
+            <template v-slot:item="props">
+              <v-icon
+                :color="
+                  props.isFilled ? genColor(props.index) : 'grey lighten-1'
+                "
+                @click="props.click"
+                >{{ props.isFilled ? "mdi-star" : "mdi-star-outline" }}</v-icon
+              >
+            </template>
+          </v-rating>
+        </v-col>
+      </v-row>
+      <v-row class="px-4 mb-4">
+        <v-col>
+          <v-text-field
+            :label="$t('m.briefIntroduction')"
+            dense
+            hide-details
+            v-model="postForm.content_short"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <mavon-editor v-model="postForm.content"></mavon-editor>
     </v-card>
-  </div>
+  </v-form>
 </template>
 
 <script>
+import { mavonEditor } from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
+import { createArticle } from "../api/article";
+
+const defaultForm = {
+  status: "0",
+  title: "", // 文章题目
+  content: "", // 文章内容
+  content_short: "", // 文章摘要
+  source_uri: "", // 文章外链
+  // image_uri: '', // 文章图片
+  display_time: undefined, // 前台展示时间
+  // id: undefined,
+  // platforms: ['a-platform'],
+  comment_disabled: 0,
+  importance: 0,
+  type: ""
+};
 export default {
+  name: "Markdown",
+  components: {
+    mavonEditor
+  },
   data: () => {
     return {
-      hots: []
+      colors: ["green", "purple", "orange", "indigo", "red"],
+      content: null,
+      expand: false,
+      postForm: Object.assign({}, defaultForm)
     };
   },
-  mounted() {
-    this.getlist();
-    setTimeout(() => {
-      this.selectAllTitle();
-    }, 300);
+  computed: {
+    displayTime: {
+      // set and get is useful when the data
+      // returned by the back end api is different from the front end
+      // back end return => "2013-06-25 06:59:25"
+      // front end need timestamp => 1372114765000
+      get() {
+        return new Date();
+      },
+      set(val) {
+        this.postForm.display_time = new Date(val).getTime();
+      }
+    }
   },
   methods: {
-    getlist() {
-      this.$axios
-        .post("/api/wb/WB-hots-list", { time: "1609986941611" })
-        .then(res => {
-          this.hots = res.data.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    genColor(i) {
+      return this.colors[i];
     },
-    handlerHref(url) {
-      window.open(url);
-    },
-    selectAllTitle() {
-      let title = document.querySelectorAll(".v-list-item__title");
-      let navList = Array.from(title);
-      navList.forEach(item => {
-        item.name = item.innerHTML;
+    handleSubmit() {
+      this.postForm.auth_id = this.$store.state.data.userId;
+      createArticle(this.postForm).then(res => {
+        console.log(res);
       });
-      navList.forEach(el => {
-        let index = el.localName.indexOf("h");
-        el.lev = "lev" + el.localName.substring(index + 1, el.localName.length);
-      });
-      this.$store.commit("SET_ITEMS", navList);
     }
   }
 };
 </script>
-
-<style>
-.sub_title {
-  font-size: 0.725rem !important ;
-  margin: 5px 0;
-  display: block;
-}
-</style>
